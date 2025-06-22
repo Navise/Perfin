@@ -3,7 +3,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTransactions, type Transaction, type TransactionPayload } from '../../contexts/TransactionContext';
-import { useAccounts, type Account } from '../../contexts/AccountContext'; // Import the account context
+import { useAccounts, type Account } from '../../contexts/AccountContext';
 
 
 export const DashboardPage: React.FC = () => {

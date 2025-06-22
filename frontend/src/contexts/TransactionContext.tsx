@@ -49,7 +49,7 @@ export const TransactionProvider: React.FC<TransactionProviderProps> = ({ childr
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}transactions`);
+      const response = await fetch(`${API_BASE_URL}/transactions`);
       if (!response.ok) {
         throw new Error(`Failed to fetch transactions: ${response.statusText}`);
       }
@@ -103,7 +103,7 @@ export const TransactionProvider: React.FC<TransactionProviderProps> = ({ childr
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}transactions/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -126,7 +126,7 @@ export const TransactionProvider: React.FC<TransactionProviderProps> = ({ childr
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}transactions/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/transactions/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
