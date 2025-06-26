@@ -34,8 +34,8 @@ jobs:
 
       - name: Build and push backend image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/perfin-backend:latest ./backend
-          docker push ghcr.io/${{ github.repository_owner }}/perfin-backend:latest
+          docker build -t ghcr.io/navise/perfin-backend:latest ./backend
+          docker push ghcr.io/navise/perfin-backend:latest
 
       - name: Build and push frontend image with VITE_ args
         run: |
@@ -44,6 +44,6 @@ jobs:
             --build-arg VITE_DATADOG_APPLICATION_ID=$VITE_DATADOG_APPLICATION_ID \
             --build-arg VITE_DATADOG_CLIENT_TOKEN=$VITE_DATADOG_CLIENT_TOKEN \
             --build-arg VITE_DATADOG_SITE=$VITE_DATADOG_SITE \
-            -t ghcr.io/${{ github.repository_owner }}/perfin-frontend:latest \
+            -t ghcr.io/navise/perfin-frontend:latest \
             ./frontend
-          docker push ghcr.io/${{ github.repository_owner }}/perfin-frontend:latest
+          docker push ghcr.io/naviseperfin-frontend:latest
