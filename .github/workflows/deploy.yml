@@ -1,0 +1,63 @@
+name: Build & Deploy to Azure VM (Master)
+
+on:
+  push:
+    branches:
+      - master 
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_BACKEND: ghcr.io/navise/perfin-backend:latest
+      IMAGE_FRONTEND: ghcr.io/navise/perfin-frontend:latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u navise --password-stdin
+
+      - name: Build and Push Backend Image
+        run: |
+          docker build -t $IMAGE_BACKEND ./backend
+          docker push $IMAGE_BACKEND
+
+      - name: Build and Push Frontend Image
+        run: |
+          docker build \
+            --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
+            --build-arg VITE_DATADOG_APPLICATION_ID=${{ secrets.VITE_DATADOG_APPLICATION_ID }} \
+            --build-arg VITE_DATADOG_CLIENT_TOKEN=${{ secrets.VITE_DATADOG_CLIENT_TOKEN }} \
+            --build-arg VITE_DATADOG_SITE=${{ secrets.VITE_DATADOG_SITE }} \
+            -t $IMAGE_FRONTEND ./frontend
+          docker push $IMAGE_FRONTEND
+
+      - name: SSH & Deploy to Azure VM
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd ~/perfin
+
+            # Regenerate .env
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" > .env
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+            echo "DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}" >> .env
+            echo "PORT=3001" >> .env
+            echo "TEMP_USER_ID=${{ secrets.TEMP_USER_ID }}" >> .env
+            echo "APP_PASSWORD=${{ secrets.APP_PASSWORD }}" >> .env
+
+            echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env
+            echo "VITE_DATADOG_APPLICATION_ID=${{ secrets.VITE_DATADOG_APPLICATION_ID }}" >> .env
+            echo "VITE_DATADOG_CLIENT_TOKEN=${{ secrets.VITE_DATADOG_CLIENT_TOKEN }}" >> .env
+            echo "VITE_DATADOG_SITE=${{ secrets.VITE_DATADOG_SITE }}" >> .env
+
+            docker login ghcr.io -u navise -p ${{ secrets.GHCR_PAT }}
+            docker-compose pull
+            docker-compose up -d
