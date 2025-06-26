@@ -3,7 +3,7 @@ name: Build & Deploy to Azure VM (Master)
 on:
   push:
     branches:
-      - master 
+      - master
 
 jobs:
   build-and-deploy:
@@ -42,22 +42,37 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd ~/Perfin
+            set -e
+            set -x
 
-            
-            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" > .env
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
-            echo "DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}" >> .env
-            echo "PORT=3001" >> .env
-            echo "TEMP_USER_ID=${{ secrets.TEMP_USER_ID }}" >> .env
-            echo "APP_PASSWORD=${{ secrets.APP_PASSWORD }}" >> .env
+            cd /home/dev
 
-            echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env
-            echo "VITE_DATADOG_APPLICATION_ID=${{ secrets.VITE_DATADOG_APPLICATION_ID }}" >> .env
-            echo "VITE_DATADOG_CLIENT_TOKEN=${{ secrets.VITE_DATADOG_CLIENT_TOKEN }}" >> .env
-            echo "VITE_DATADOG_SITE=${{ secrets.VITE_DATADOG_SITE }}" >> .env
+            if [ ! -d "/home/dev/Perfin" ]; then
+              git clone https://github.com/navise/Perfin.git /home/dev/Perfin
+            else
+              cd /home/dev/Perfin
+              git pull origin master
+            fi
 
-            docker login ghcr.io -u navise -p ${{ secrets.GHCR_PAT }}
+            cd /home/dev/Perfin
+
+            cat <<EOF > backend/.env
+POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}
+PORT=3001
+TEMP_USER_ID=${{ secrets.TEMP_USER_ID }}
+APP_PASSWORD=${{ secrets.APP_PASSWORD }}
+EOF
+
+            cat <<EOF > .env
+VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+VITE_DATADOG_APPLICATION_ID=${{ secrets.VITE_DATADOG_APPLICATION_ID }}
+VITE_DATADOG_CLIENT_TOKEN=${{ secrets.VITE_DATADOG_CLIENT_TOKEN }}
+VITE_DATADOG_SITE=${{ secrets.VITE_DATADOG_SITE }}
+EOF
+
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u navise --password-stdin
             docker-compose pull
             docker-compose up -d
