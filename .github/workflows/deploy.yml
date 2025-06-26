@@ -60,7 +60,7 @@ jobs:
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend/.env
             echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> backend/.env
             echo "DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}" >> backend/.env
-            echo "PORT=3001" >> backend/.env
+            echo "PORT=5000" >> backend/.env
             echo "TEMP_USER_ID=${{ secrets.TEMP_USER_ID }}" >> backend/.env
             echo "APP_PASSWORD=${{ secrets.APP_PASSWORD }}" >> backend/.env
 
