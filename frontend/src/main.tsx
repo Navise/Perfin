@@ -42,9 +42,8 @@ datadogRum.startSessionReplayRecording();
 const ErrorFallback = () => (
   <div className="flex items-center justify-center min-h-screen bg-red-100 text-red-700 text-center p-4">
     <p className="text-xl font-semibold">
-      Oops! Something went wrong with the application.
+       Something went wrong with the application.
       <br />
-      Please try refreshing the page or contact support if the issue persists.
     </p>
   </div>
 );
