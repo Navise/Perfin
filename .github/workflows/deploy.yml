@@ -56,22 +56,18 @@ jobs:
 
             cd /home/dev/Perfin
 
-            cat <<EOF > backend/.env
-POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}
-PORT=3001
-TEMP_USER_ID=${{ secrets.TEMP_USER_ID }}
-APP_PASSWORD=${{ secrets.APP_PASSWORD }}
-EOF
+            echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" > backend/.env
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend/.env
+            echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> backend/.env
+            echo "DATABASE_URL=postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}" >> backend/.env
+            echo "PORT=3001" >> backend/.env
+            echo "TEMP_USER_ID=${{ secrets.TEMP_USER_ID }}" >> backend/.env
+            echo "APP_PASSWORD=${{ secrets.APP_PASSWORD }}" >> backend/.env
 
-            cat <<EOF > .env
-VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
-VITE_DATADOG_APPLICATION_ID=${{ secrets.VITE_DATADOG_APPLICATION_ID }}
-VITE_DATADOG_CLIENT_TOKEN=${{ secrets.VITE_DATADOG_CLIENT_TOKEN }}
-VITE_DATADOG_SITE=${{ secrets.VITE_DATADOG_SITE }}
-EOF
+            echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" > .env
+            echo "VITE_DATADOG_APPLICATION_ID=${{ secrets.VITE_DATADOG_APPLICATION_ID }}" >> .env
+            echo "VITE_DATADOG_CLIENT_TOKEN=${{ secrets.VITE_DATADOG_CLIENT_TOKEN }}" >> .env
+            echo "VITE_DATADOG_SITE=${{ secrets.VITE_DATADOG_SITE }}" >> .env
 
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u navise --password-stdin
             docker-compose pull
