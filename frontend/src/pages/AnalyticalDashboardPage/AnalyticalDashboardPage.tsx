@@ -7,7 +7,7 @@ export type Transaction = {
   amount: number;
   type: 'income' | 'expense';
   category?: string;
-  transaction_date: string; // <-- Use this property
+  transaction_date: string; 
 };
 
 export const AnalyticalDashboardPage: React.FC = () => {
@@ -53,7 +53,7 @@ export const AnalyticalDashboardPage: React.FC = () => {
     let expense = 0;
 
     transactions.forEach(transaction => {
-      const transactionDate = new Date(transaction.transaction_date); // <-- Fix here
+      const transactionDate = new Date(transaction.transaction_date); 
       if (transactionDate.getMonth() === currentMonth && transactionDate.getFullYear() === currentYear) {
         if (transaction.type === 'income') {
           income += transaction.amount;
@@ -81,7 +81,7 @@ export const AnalyticalDashboardPage: React.FC = () => {
     const monthlyData: { [key: string]: { income: number; expense: number; balance: number } } = {};
 
     transactions.forEach(transaction => {
-      const transactionDate = new Date(transaction.transaction_date); // <-- Fix here
+      const transactionDate = new Date(transaction.transaction_date); 
       const yearMonth = `${transactionDate.getFullYear()}-${(transactionDate.getMonth() + 1).toString().padStart(2, '0')}`;
 
       if (!monthlyData[yearMonth]) {
