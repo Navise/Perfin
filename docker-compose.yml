@@ -15,9 +15,8 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-
   backend:
-    build: ./backend
+    image: ghcr.io/navise/perfin-backend:latest
     container_name: perfin-backend
     restart: always
     env_file:
@@ -27,16 +26,12 @@ services:
     depends_on:
       - postgres
 
-
   frontend:
-    build:
-      context: ./frontend
-      args:
-        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
-        VITE_DATADOG_APPLICATION_ID: ${VITE_DATADOG_APPLICATION_ID}
-        VITE_DATADOG_CLIENT_TOKEN: ${VITE_DATADOG_CLIENT_TOKEN}
-        VITE_DATADOG_SITE: ${VITE_DATADOG_SITE}
+    image: ghcr.io/navise/perfin-frontend:latest
     container_name: perfin-frontend
+    restart: always
+    env_file:
+      - .env
     ports:
       - "80:80"
     depends_on:
