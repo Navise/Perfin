@@ -4,10 +4,12 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 
+
 const app = express();
 const port = process.env.PORT || 3001;
 const TEMP_USER_ID = process.env.TEMP_USER_ID;
 const APP_PASSWORD = process.env.APP_PASSWORD;
+
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
