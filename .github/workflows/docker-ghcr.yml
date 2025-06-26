@@ -46,4 +46,4 @@ jobs:
             --build-arg VITE_DATADOG_SITE=$VITE_DATADOG_SITE \
             -t ghcr.io/navise/perfin-frontend:latest \
             ./frontend
-          docker push ghcr.io/naviseperfin-frontend:latest
+          docker push ghcr.io/navise/perfin-frontend:latest
