@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: perfin-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+
+  backend:
+    build: ./backend
+    container_name: perfin-backend
+    restart: always
+    env_file:
+      - ./backend/.env
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+        VITE_DATADOG_APPLICATION_ID: ${VITE_DATADOG_APPLICATION_ID}
+        VITE_DATADOG_CLIENT_TOKEN: ${VITE_DATADOG_CLIENT_TOKEN}
+        VITE_DATADOG_SITE: ${VITE_DATADOG_SITE}
+    container_name: perfin-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
