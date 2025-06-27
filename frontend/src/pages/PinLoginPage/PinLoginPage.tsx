@@ -51,7 +51,7 @@ export const PinLoginPage: React.FC = () => {
             Welcome Navneeth!
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Enter your 20-character password to continue
+            Enter your strong password to continue
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

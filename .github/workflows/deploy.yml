@@ -71,4 +71,5 @@ jobs:
 
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u navise --password-stdin
             docker-compose pull
+            docker-compose down --remove-orphans
             docker-compose up -d
